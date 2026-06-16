@@ -174,7 +174,7 @@
       <p class="lede">Three quick parts — your work, your tools, and what would make things run hotter. A few honest minutes helps us back you up better. No wrong answers.</p>
       <p class="mic-hint">
         <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0"/><line x1="12" y1="18" x2="12" y2="21"/></svg>
-        Can't be bothered typing? Tap the mic on any field and just talk.
+        Prefer talking? Tap a mic to switch dictation on, then just speak into whatever field you're in.
       </p>
 
       <div class="meter"><div class="track"><i id="bar"></i></div><span class="count" id="count">1 / 9</span></div>
@@ -217,20 +217,11 @@
         <!-- 4 -->
         <section class="step" data-step="time">
           <p class="chapter">Part 1 · Your work</p>
-          <h2>Where does your week go?</h2>
-          <p class="help">Tap the things that quietly eat the most time. Pick as many as ring true.</p>
-          <div class="chips" data-multi-simple="timeSinks">
-            <span class="chip" data-v="Email & messages">Email &amp; messages</span>
-            <span class="chip" data-v="Client & customer enquiries">Client &amp; customer enquiries</span>
-            <span class="chip" data-v="Content & creative work">Content &amp; creative work</span>
-            <span class="chip" data-v="Admin & data entry">Admin &amp; data entry</span>
-            <span class="chip" data-v="Meetings & calls">Meetings &amp; calls</span>
-            <span class="chip" data-v="Chasing people or info">Chasing people or info</span>
-            <span class="chip" data-v="Switching between tools">Switching between tools</span>
-          </div>
-          <label class="fld after-chips"><span>Anything else? (optional)</span>
-            <div class="fw area"><textarea id="timeOther" class="short" placeholder="The big time-sink we didn't list."></textarea>
-              <button type="button" class="mic" data-for="timeOther" aria-label="Dictate"></button></div></label>
+          <h2>Where does most of your time actually go?</h2>
+          <p class="help">The few things that take the biggest chunk of your week — the stuff you'd love to spend less time on. Be as specific to your role as you like.</p>
+          <label class="fld"><span>Your biggest time-sinks</span>
+            <div class="fw area"><textarea id="timeText" placeholder="e.g. editing reels & replying to comments · writing quotes & chasing sign-off · reconciling orders & supplier admin"></textarea>
+              <button type="button" class="mic" data-for="timeText" aria-label="Dictate"></button></div></label>
         </section>
 
         <!-- 5 -->
@@ -343,7 +334,7 @@
   const SHEET_ENDPOINT = 'https://script.google.com/macros/s/AKfycbzrU4tbks_XZ8kPnJhHyP3olbTJ3-DjNh_JQkv33PLu9gqtOtT9exiRJ1r5eZfZramo/exec';
 
   const DEVICES = ['Mac','Windows','iPhone','Android','iPad / tablet'];
-  const state = { name:'', role:'', responsibilities:'', week:'', timeSinks:[], timeOther:'',
+  const state = { name:'', role:'', responsibilities:'', week:'', timeText:'',
     friction:'', tools:{}, toolOrder:[], none:false, toolsLoved:'', toolsFriction:'', switchPain:'',
     mcp:'', needMore:[], anythingElse:'' };
   const steps=[...document.querySelectorAll('.step')];
@@ -354,27 +345,37 @@
   const back=document.getElementById('back'), next=document.getElementById('next'), nav=document.getElementById('nav');
 
   const bind=(id,key)=>{ const el=document.getElementById(id); el && el.addEventListener('input', e=>state[key]=e.target.value.trim()); };
-  ['name','role','responsibilities','week','timeOther','friction','toolsLoved','toolsFriction','anythingElse'].forEach(k=>bind(k,k));
+  ['name','role','responsibilities','week','timeText','friction','toolsLoved','toolsFriction','anythingElse'].forEach(k=>bind(k,k));
   function popChip(c){ c.classList.remove('pop'); void c.offsetWidth; c.classList.add('pop'); }
 
-  /* dictation (Web Speech API, feature-detected) */
+  /* dictation (Web Speech API) — switch on once, then it follows the focused field */
   const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
-  let activeRec=null, activeBtn=null;
-  function stopRec(){ if(activeRec){ try{activeRec.stop();}catch(e){} } if(activeBtn) activeBtn.classList.remove('on'); activeRec=null; activeBtn=null; }
+  let listening=false, rec=null, micTarget=null;
+  const MIC_SVG='<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0"/><line x1="12" y1="18" x2="12" y2="21"/></svg>';
+  function showIndicator(){ document.querySelectorAll('.mic').forEach(m=>m.classList.toggle('on', listening && micTarget && m.dataset.for===micTarget.id)); }
+  function setTarget(field){ micTarget=field; showIndicator(); }
+  function startListening(field){
+    listening=true; setTarget(field); field.focus();
+    rec=new SR(); rec.lang='en-GB'; rec.continuous=true; rec.interimResults=false;
+    rec.onresult=(ev)=>{ let t=''; for(let k=ev.resultIndex;k<ev.results.length;k++){ if(ev.results[k].isFinal) t+=ev.results[k][0].transcript; }
+      if(t && micTarget){ const f=micTarget, sep=(f.value && !/\s$/.test(f.value))?' ':''; f.value+=sep+t.trim()+' '; f.dispatchEvent(new Event('input')); } };
+    rec.onerror=(e)=>{ if(e.error==='not-allowed'||e.error==='service-not-allowed') stopListening(); };
+    rec.onend=()=>{ if(listening){ try{ rec.start(); }catch(e){} } };
+    try{ rec.start(); }catch(e){ stopListening(); }
+  }
+  function stopListening(){ listening=false; if(rec){ try{rec.stop();}catch(e){} rec=null; } micTarget=null; document.querySelectorAll('.mic').forEach(m=>m.classList.remove('on')); }
   if(SR){
     document.body.classList.add('has-mic');
+    document.querySelectorAll('.fw input[type=text], .fw textarea').forEach(f=>{
+      f.addEventListener('focus', ()=>{ if(listening) setTarget(f); });
+    });
     document.querySelectorAll('.mic').forEach(btn=>{
-      btn.innerHTML='<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0"/><line x1="12" y1="18" x2="12" y2="21"/></svg>';
+      btn.innerHTML=MIC_SVG;
       btn.addEventListener('click', ()=>{
         const field=document.getElementById(btn.dataset.for);
-        if(activeBtn===btn){ stopRec(); return; }
-        stopRec();
-        const rec=new SR(); rec.lang='en-GB'; rec.continuous=true; rec.interimResults=false;
-        rec.onresult=(ev)=>{ let t=''; for(let k=ev.resultIndex;k<ev.results.length;k++){ if(ev.results[k].isFinal) t+=ev.results[k][0].transcript; }
-          if(t){ const sep=(field.value && !/\s$/.test(field.value))?' ':''; field.value+=sep+t.trim()+' '; field.dispatchEvent(new Event('input')); } };
-        rec.onerror=()=>stopRec(); rec.onend=()=>{ if(activeBtn===btn) stopRec(); };
-        activeRec=rec; activeBtn=btn; btn.classList.add('on'); field.focus();
-        try{ rec.start(); }catch(e){ stopRec(); }
+        if(listening && micTarget===field){ stopListening(); return; }
+        if(listening){ setTarget(field); field.focus(); return; }
+        startListening(field);
       });
     });
   }
@@ -428,6 +429,7 @@
 
   /* navigation */
   function render(){
+    stopListening();
     steps.forEach((s,idx)=>s.classList.toggle('active', idx===i));
     const onResult=i===total;
     bar.style.width=Math.round(((i+1)/(total+1))*100)+'%';
@@ -435,7 +437,7 @@
     nav.style.display=onResult?'none':'flex';
     back.disabled=i===0;
     next.textContent=(i===total-1)?'Finish':'Continue';
-    if(onResult){ stopRec(); buildSummary(); submit(); }
+    if(onResult){ buildSummary(); submit(); }
     window.scrollTo({top:0, behavior:'smooth'});
   }
   next.addEventListener('click', ()=>{ if(i<total){ i++; render(); }});
@@ -451,7 +453,7 @@
   function payload(){
     return {
       name:state.name, role:state.role, responsibilities:state.responsibilities, week:state.week,
-      timeSinks:joinList(state.timeSinks, state.timeOther), friction:state.friction,
+      timeSinks:state.timeText, friction:state.friction,
       aiTools:aiToolsString(), toolsLoved:state.toolsLoved, toolsFriction:state.toolsFriction,
       switchPain:state.switchPain, mcp:state.mcp, needMore:joinList(state.needMore, ''), anythingElse:state.anythingElse
     };
