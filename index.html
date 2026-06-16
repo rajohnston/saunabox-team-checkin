@@ -10,11 +10,10 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
 <style>
   :root{
-    --primary:#1C1412; --primary-light:#2E2420;
-    --surface:#FAF9F5; --sand:#F0E6D8;
+    --primary:#1C1412; --surface:#FAF9F5; --sand:#F0E6D8;
     --accent:#8C4A2F; --accent-hover:#7A3A22; --secondary:#6B3520;
     --on-accent:#FAF9F5; --muted:#7A6E65; --border:#E3D8CC; --border-strong:#C8B8A8;
-    --r-sm:8px; --r-md:12px; --r-lg:16px; --r-xl:24px;
+    --r-md:12px; --r-lg:16px; --r-xl:24px;
     --shadow-lg:0 24px 60px rgba(28,20,18,.22);
     --t:250ms cubic-bezier(.2,.7,.2,1);
   }
@@ -31,27 +30,23 @@
     display:flex; align-items:flex-start; justify-content:center;
     padding:clamp(14px,4vw,48px) clamp(12px,4vw,24px) 64px;
   }
-
   .card{position:relative; width:min(640px,100%); background:#fff;
     border:1px solid var(--border); border-radius:var(--r-xl); overflow:hidden;
     box-shadow:var(--shadow-lg); animation:rise .55s var(--t) both}
   @keyframes rise{from{opacity:0; transform:translateY(18px)}to{opacity:1; transform:none}}
 
-  /* ---------- HERO ---------- */
+  /* HERO */
   .hero{position:relative; height:clamp(168px,42vw,236px); overflow:hidden; background:#1c1412}
   .hero img{position:absolute; inset:0; width:100%; height:100%; object-fit:cover;
     transform:scale(1.04); animation:kenburns 26s ease-in-out infinite alternate}
   @keyframes kenburns{from{transform:scale(1.04) translateY(0)}to{transform:scale(1.14) translateY(-6px)}}
   .hero .veil{position:absolute; inset:0;
-    background:
-      linear-gradient(to top, rgba(20,14,12,.86) 2%, rgba(28,20,18,.28) 42%, rgba(28,20,18,.05) 70%),
+    background:linear-gradient(to top, rgba(20,14,12,.86) 2%, rgba(28,20,18,.28) 42%, rgba(28,20,18,.05) 70%),
       linear-gradient(105deg, rgba(140,74,47,.30), rgba(20,14,12,0) 55%)}
-  /* ember glow near the heater (bottom-right of photo) */
   .hero .ember{position:absolute; right:7%; bottom:6%; width:180px; height:120px;
     background:radial-gradient(closest-side, rgba(255,150,70,.55), rgba(255,120,40,.12) 60%, transparent 75%);
     filter:blur(8px); mix-blend-mode:screen; animation:flicker 4.5s ease-in-out infinite}
   @keyframes flicker{0%,100%{opacity:.55; transform:scale(1)}40%{opacity:.85; transform:scale(1.06)}65%{opacity:.6; transform:scale(.98)}}
-  /* rising steam */
   .steam{position:absolute; inset:0; pointer-events:none; overflow:hidden}
   .steam i{position:absolute; bottom:-22px; width:60px; height:60px; border-radius:50%;
     background:radial-gradient(closest-side, rgba(255,250,245,.5), rgba(255,250,245,0) 70%);
@@ -60,11 +55,7 @@
   .steam i:nth-child(2){left:34%; animation-duration:10s; animation-delay:2.4s; transform:scale(1.3)}
   .steam i:nth-child(3){left:58%; animation-duration:9s; animation-delay:1.2s; transform:scale(1.05)}
   .steam i:nth-child(4){left:76%; animation-duration:11s; animation-delay:3.6s; transform:scale(1.5)}
-  @keyframes rise-steam{
-    0%{opacity:0; transform:translateY(0) scale(.8)}
-    18%{opacity:.7}
-    70%{opacity:.45}
-    100%{opacity:0; transform:translateY(-180px) translateX(18px) scale(1.7)}}
+  @keyframes rise-steam{0%{opacity:0; transform:translateY(0) scale(.8)}18%{opacity:.7}70%{opacity:.45}100%{opacity:0; transform:translateY(-180px) translateX(18px) scale(1.7)}}
   .hero-copy{position:absolute; left:0; right:0; bottom:0; padding:clamp(18px,5vw,26px); z-index:2}
   .eyebrow{display:inline-flex; align-items:center; gap:9px; margin:0 0 8px;
     font-size:12px; letter-spacing:.18em; text-transform:uppercase; font-weight:700; color:#f3d9b8}
@@ -72,31 +63,50 @@
   .hero-copy h1{margin:0; color:#fff; font-weight:800; letter-spacing:-.02em; line-height:1.08;
     font-size:clamp(26px,6.6vw,40px); text-shadow:0 2px 18px rgba(0,0,0,.35)}
 
-  /* ---------- BODY ---------- */
+  /* BODY */
   .body{padding:clamp(22px,5vw,38px)}
-  .lede{margin:0 0 22px; color:var(--muted); font-size:clamp(15px,3.6vw,17px); line-height:1.5; max-width:48ch}
+  .lede{margin:0 0 14px; color:var(--muted); font-size:clamp(15px,3.6vw,17px); line-height:1.5; max-width:48ch}
+  .mic-hint{display:none; align-items:center; gap:8px; margin:0 0 22px; font-size:13.5px; color:var(--muted)}
+  body.has-mic .mic-hint{display:flex}
+  .mic-hint svg{flex:0 0 auto; color:var(--accent)}
 
   .meter{display:flex; align-items:center; gap:12px; margin:0 0 26px}
   .track{flex:1; height:8px; background:var(--sand); border-radius:99px; overflow:hidden}
-  .track > i{display:block; height:100%; width:16%; border-radius:99px;
+  .track > i{display:block; height:100%; width:10%; border-radius:99px;
     background:linear-gradient(90deg,var(--accent),var(--secondary)); transition:width .5s var(--t)}
   .count{font-size:13px; font-weight:600; color:var(--muted); white-space:nowrap}
 
   .step{display:none}
   .step.active{display:block; animation:slide .42s var(--t) both}
   @keyframes slide{from{opacity:0; transform:translateY(12px)}to{opacity:1; transform:none}}
+  .chapter{display:flex; align-items:center; gap:8px; margin:0 0 8px; font-size:11.5px; letter-spacing:.16em; text-transform:uppercase; font-weight:700; color:var(--accent)}
+  .chapter::before{content:""; width:16px; height:2px; background:var(--accent); border-radius:2px}
   .step h2{margin:0 0 6px; font-size:clamp(20px,5vw,27px); font-weight:700; letter-spacing:-.01em; line-height:1.2}
   .step .help{margin:0 0 20px; color:var(--muted); font-size:15px; line-height:1.5}
 
   label.fld{display:block; margin:0 0 18px}
   label.fld > span{display:block; font-weight:600; font-size:15px; margin:0 0 8px}
-  input[type=text], textarea{
-    width:100%; font:inherit; color:var(--primary); background:var(--surface);
+  .fw{position:relative}
+  input[type=text], textarea{width:100%; font:inherit; color:var(--primary); background:var(--surface);
     border:1.5px solid var(--border); border-radius:var(--r-md); padding:14px 16px;
     transition:border-color var(--t), box-shadow var(--t)}
-  textarea{min-height:120px; resize:vertical; line-height:1.5}
+  body.has-mic .fw input[type=text], body.has-mic .fw textarea{padding-right:52px}
+  textarea{min-height:118px; resize:vertical; line-height:1.5}
+  textarea.short{min-height:80px}
   input:focus, textarea:focus{outline:none; border-color:var(--accent); box-shadow:0 0 0 4px rgba(140,74,47,.12)}
   ::placeholder{color:#b3a899}
+
+  .mic{position:absolute; right:8px; width:38px; height:38px; border-radius:50%;
+    border:1.5px solid var(--border); background:#fff; color:var(--accent);
+    display:none; align-items:center; justify-content:center; cursor:pointer; padding:0;
+    transition:background var(--t), color var(--t), border-color var(--t), transform .12s ease}
+  body.has-mic .mic{display:flex}
+  .fw.line .mic{top:50%; transform:translateY(-50%)}
+  .fw.area .mic{top:9px}
+  .mic:hover{border-color:var(--accent)}
+  .mic:active{transform:scale(.92)} .fw.line .mic:active{transform:translateY(-50%) scale(.92)}
+  .mic.on{background:var(--accent); color:#fff; border-color:var(--accent); animation:micpulse 1.3s ease-in-out infinite}
+  @keyframes micpulse{0%,100%{box-shadow:0 0 0 0 rgba(140,74,47,.5)}50%{box-shadow:0 0 0 9px rgba(140,74,47,0)}}
 
   .chips{display:flex; flex-wrap:wrap; gap:10px}
   .chip{cursor:pointer; user-select:none; min-height:48px; display:inline-flex; align-items:center;
@@ -105,41 +115,46 @@
     transition:transform .12s ease, background var(--t), border-color var(--t), color var(--t), box-shadow var(--t)}
   .chip:hover{border-color:var(--border-strong)}
   .chip:active{transform:scale(.95)}
-  .chip.on{background:var(--accent); border-color:var(--accent); color:var(--on-accent);
-    box-shadow:0 6px 18px -6px rgba(140,74,47,.6)}
+  .chip.on{background:var(--accent); border-color:var(--accent); color:var(--on-accent); box-shadow:0 6px 18px -6px rgba(140,74,47,.6)}
   .chip.pop{animation:pop .32s cubic-bezier(.2,1.3,.4,1)}
   @keyframes pop{0%{transform:scale(1)}45%{transform:scale(1.1)}100%{transform:scale(1)}}
   .chip.lg{padding:14px 20px; font-size:16px}
+  .after-chips{margin-top:14px}
 
   .tool-detail{margin-top:18px; display:flex; flex-direction:column; gap:12px}
-  .tool-row{background:var(--sand); border:1px solid var(--border); border-radius:var(--r-lg); padding:16px;
-    animation:slide .3s var(--t) both}
+  .tool-row{background:var(--sand); border:1px solid var(--border); border-radius:var(--r-lg); padding:16px; animation:slide .3s var(--t) both}
   .tool-row .tname{font-weight:700; font-size:16px; margin:0 0 12px}
   .tool-row .sublbl{font-size:12.5px; font-weight:600; text-transform:uppercase; letter-spacing:.06em; color:var(--muted); margin:0 0 8px}
-  .tool-row .grp{margin-bottom:14px}
-  .tool-row .grp:last-child{margin-bottom:0}
+  .tool-row .grp{margin-bottom:14px} .tool-row .grp:last-child{margin-bottom:0}
   .seg{display:flex; gap:8px; flex-wrap:wrap}
   .seg .chip, .dev .chip{min-height:42px; padding:9px 15px; font-size:14px; background:#fff}
   .seg .chip.on, .dev .chip.on{background:var(--accent); color:var(--on-accent)}
 
+  /* scale */
+  .scale{display:grid; grid-template-columns:repeat(5,1fr); gap:8px; margin-top:4px}
+  .sc{cursor:pointer; user-select:none; min-height:54px; display:flex; align-items:center; justify-content:center;
+    border:1.5px solid var(--border); background:var(--surface); border-radius:var(--r-md); font-weight:700; font-size:17px; color:var(--primary);
+    transition:transform .12s ease, background var(--t), color var(--t), border-color var(--t), box-shadow var(--t)}
+  .sc:active{transform:scale(.95)}
+  .sc.on{background:var(--accent); color:var(--on-accent); border-color:var(--accent); box-shadow:0 6px 18px -6px rgba(140,74,47,.6)}
+  .scale-ends{display:flex; justify-content:space-between; margin:8px 2px 0; font-size:13px; color:var(--muted)}
+
   .nav{display:flex; gap:12px; align-items:center; margin-top:28px}
-  .btn{cursor:pointer; border:0; font:inherit; font-weight:700; min-height:52px; padding:0 26px;
-    border-radius:var(--r-md); transition:transform .12s ease, filter var(--t), background var(--t)}
+  .btn{cursor:pointer; border:0; font:inherit; font-weight:700; min-height:52px; padding:0 26px; border-radius:var(--r-md);
+    transition:transform .12s ease, filter var(--t), background var(--t)}
   .btn:active{transform:scale(.98)}
-  .btn-primary{background:var(--accent); color:var(--on-accent); flex:1;
-    box-shadow:0 10px 24px -10px rgba(140,74,47,.8)}
+  .btn-primary{background:var(--accent); color:var(--on-accent); flex:1; box-shadow:0 10px 24px -10px rgba(140,74,47,.8)}
   .btn-primary:hover{background:var(--accent-hover)}
   .btn-ghost{background:transparent; color:var(--secondary); box-shadow:inset 0 0 0 1.5px var(--border-strong)}
   .btn[disabled]{opacity:.45; cursor:not-allowed; box-shadow:none}
 
   .done-glow{position:relative}
   .done-glow::before{content:""; position:absolute; left:-10px; top:-8px; width:64px; height:64px;
-    background:radial-gradient(closest-side, rgba(140,74,47,.28), transparent 70%);
-    border-radius:50%; animation:flicker 3.5s ease-in-out infinite; z-index:-1}
+    background:radial-gradient(closest-side, rgba(140,74,47,.28), transparent 70%); border-radius:50%;
+    animation:flicker 3.5s ease-in-out infinite; z-index:-1}
   .summary{background:var(--sand); border:1px solid var(--border); border-radius:var(--r-lg);
-    padding:18px 20px; white-space:pre-wrap; line-height:1.6; font-size:15px; color:var(--primary)}
-  .toast{display:inline-block; margin-left:12px; color:var(--secondary); font-weight:700; font-size:14px;
-    opacity:0; transform:translateY(4px); transition:all var(--t)}
+    padding:18px 20px; white-space:pre-wrap; line-height:1.6; font-size:14.5px; color:var(--primary)}
+  .toast{display:inline-block; margin-left:12px; color:var(--secondary); font-weight:700; font-size:14px; opacity:0; transform:translateY(4px); transition:all var(--t)}
   .toast.show{opacity:1; transform:none}
   .foot{margin-top:22px; padding-top:18px; border-top:1px solid var(--border); color:var(--muted); font-size:12.5px; line-height:1.5}
 
@@ -148,63 +163,92 @@
 </head>
 <body>
   <main class="card">
-    <!-- HERO -->
     <div class="hero">
       <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/ef/Sauna_of_the_spa_at_Amantaka_luxury_Resort_%26_Hotel_in_Luang_Prabang_Laos.jpg/1280px-Sauna_of_the_spa_at_Amantaka_luxury_Resort_%26_Hotel_in_Luang_Prabang_Laos.jpg" alt="A warm wooden sauna interior" loading="eager" decoding="async" />
-      <div class="veil"></div>
-      <div class="ember"></div>
+      <div class="veil"></div><div class="ember"></div>
       <div class="steam"><i></i><i></i><i></i><i></i></div>
-      <div class="hero-copy">
-        <span class="eyebrow">Saunabox team</span>
-        <h1>Take a seat &amp; check in</h1>
-      </div>
+      <div class="hero-copy"><span class="eyebrow">Saunabox team</span><h1>Take a seat &amp; check in</h1></div>
     </div>
 
     <div class="body">
-      <p class="lede">Two warm minutes to map what each of us does, and the AI tools we already use — so we can share what's working and not pay twice for the same thing. No wrong answers.</p>
+      <p class="lede">Three quick parts — your work, your tools, and what would make things run hotter. A few honest minutes helps us back you up better. No wrong answers.</p>
+      <p class="mic-hint">
+        <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0"/><line x1="12" y1="18" x2="12" y2="21"/></svg>
+        Can't be bothered typing? Tap the mic on any field and just talk.
+      </p>
 
-      <div class="meter"><div class="track"><i id="bar"></i></div><span class="count" id="count">1 / 6</span></div>
+      <div class="meter"><div class="track"><i id="bar"></i></div><span class="count" id="count">1 / 9</span></div>
 
       <form id="form" onsubmit="return false">
 
-        <!-- 1: You -->
+        <!-- 1 -->
         <section class="step active" data-step="you">
+          <p class="chapter">Part 1 · Your work</p>
           <h2>First, who are you?</h2>
           <p class="help">So your answers can be matched to you.</p>
           <label class="fld"><span>Your name</span>
-            <input type="text" id="name" placeholder="e.g. Sam Carter" autocomplete="name" /></label>
+            <div class="fw line"><input type="text" id="name" placeholder="e.g. Sam Carter" autocomplete="name" />
+              <button type="button" class="mic" data-for="name" aria-label="Dictate"></button></div></label>
           <label class="fld"><span>Your role / job title</span>
-            <input type="text" id="role" placeholder="e.g. Operations, Sales, Workshop, Founder" /></label>
+            <div class="fw line"><input type="text" id="role" placeholder="e.g. Operations, Sales, Workshop, Founder" />
+              <button type="button" class="mic" data-for="role" aria-label="Dictate"></button></div></label>
         </section>
 
-        <!-- 2: Responsibilities -->
+        <!-- 2 -->
         <section class="step" data-step="resp">
+          <p class="chapter">Part 1 · Your work</p>
           <h2>What are you responsible for?</h2>
-          <p class="help">The areas that are yours to own — in your own words. A few lines is plenty.</p>
+          <p class="help">The areas that are yours to own — in your own words.</p>
           <label class="fld"><span>Your responsibilities</span>
-            <textarea id="resp" placeholder="e.g. I handle customer enquiries and bookings, manage the install schedule, and look after supplier orders."></textarea></label>
+            <div class="fw area"><textarea id="responsibilities" placeholder="e.g. I handle customer enquiries and bookings, manage the install schedule, and look after supplier orders."></textarea>
+              <button type="button" class="mic" data-for="responsibilities" aria-label="Dictate"></button></div></label>
         </section>
 
-        <!-- 3: Rhythm -->
-        <section class="step" data-step="rhythm">
-          <h2>What do you do on a regular rhythm?</h2>
-          <p class="help">The repeating things — daily, weekly or monthly. The stuff that comes round again and again.</p>
-          <label class="fld"><span>Your recurring tasks</span>
-            <textarea id="rhythm" placeholder="e.g. Daily: check & reply to enquiries. Weekly: update the install calendar, order stock. Monthly: reconcile invoices."></textarea></label>
+        <!-- 3 -->
+        <section class="step" data-step="week">
+          <p class="chapter">Part 1 · Your work</p>
+          <h2>What does a typical week look like?</h2>
+          <p class="help">The recurring rhythm — daily / weekly / monthly — plus the bigger things on your plate right now.</p>
+          <label class="fld"><span>Your week</span>
+            <div class="fw area"><textarea id="week" placeholder="e.g. Daily: enquiries & bookings. Weekly: install calendar, stock orders. Right now: onboarding the new supplier."></textarea>
+              <button type="button" class="mic" data-for="week" aria-label="Dictate"></button></div></label>
         </section>
 
-        <!-- 4: Tasks -->
-        <section class="step" data-step="tasks">
-          <h2>And your tasks right now?</h2>
-          <p class="help">Roughly — the big things on your plate, plus the smaller bits.</p>
-          <label class="fld"><span>Main tasks</span>
-            <textarea id="main" placeholder="The bigger pieces you're working on at the moment."></textarea></label>
-          <label class="fld"><span>Smaller / odd-job tasks</span>
-            <textarea id="small" placeholder="The little recurring or one-off bits that still eat time."></textarea></label>
+        <!-- 4 -->
+        <section class="step" data-step="time">
+          <p class="chapter">Part 1 · Your work</p>
+          <h2>Where does your week go?</h2>
+          <p class="help">Tap the things that quietly eat the most time. Pick as many as ring true.</p>
+          <div class="chips" data-multi-simple="timeSinks">
+            <span class="chip" data-v="Admin & data entry">Admin &amp; data entry</span>
+            <span class="chip" data-v="Email & messages">Email &amp; messages</span>
+            <span class="chip" data-v="Customer enquiries">Customer enquiries</span>
+            <span class="chip" data-v="Scheduling & logistics">Scheduling &amp; logistics</span>
+            <span class="chip" data-v="Quotes & invoicing">Quotes &amp; invoicing</span>
+            <span class="chip" data-v="Meetings">Meetings</span>
+            <span class="chip" data-v="Repetitive manual work">Repetitive manual work</span>
+            <span class="chip" data-v="Chasing people or info">Chasing people or info</span>
+            <span class="chip" data-v="Switching between tools">Switching between tools</span>
+            <span class="chip" data-v="Reporting & updates">Reporting &amp; updates</span>
+          </div>
+          <label class="fld after-chips"><span>Anything else? (optional)</span>
+            <div class="fw area"><textarea id="timeOther" class="short" placeholder="The big time-sink we didn't list."></textarea>
+              <button type="button" class="mic" data-for="timeOther" aria-label="Dictate"></button></div></label>
         </section>
 
-        <!-- 5: AI tools -->
+        <!-- 5 -->
+        <section class="step" data-step="friction">
+          <p class="chapter">Part 1 · Your work</p>
+          <h2>What's the splinter on the bench?</h2>
+          <p class="help">The thing that frustrates you most, or gets in the way of doing your job well. Say it plainly.</p>
+          <label class="fld"><span>Your biggest friction</span>
+            <div class="fw area"><textarea id="friction" placeholder="e.g. I re-type the same info into three systems. Or: I'm often waiting on answers to move forward."></textarea>
+              <button type="button" class="mic" data-for="friction" aria-label="Dictate"></button></div></label>
+        </section>
+
+        <!-- 6 -->
         <section class="step" data-step="ai">
+          <p class="chapter">Part 2 · Your tools &amp; AI</p>
           <h2>Which AI tools do you use?</h2>
           <p class="help">Tap any you use. For each one, we'll ask if it's free or paid, and the device you use it on.</p>
           <div class="chips" id="toolChips" data-multi>
@@ -221,8 +265,27 @@
           <div class="tool-detail" id="toolDetail"></div>
         </section>
 
-        <!-- 6: MCP -->
+        <!-- 7 -->
+        <section class="step" data-step="likes">
+          <p class="chapter">Part 2 · Your tools &amp; AI</p>
+          <h2>The good and the grind</h2>
+          <p class="help">Any tools, not just AI.</p>
+          <label class="fld"><span>Tools you'd genuinely miss if they vanished</span>
+            <div class="fw area"><textarea id="toolsLoved" class="short" placeholder="The ones that actually make your day easier."></textarea>
+              <button type="button" class="mic" data-for="toolsLoved" aria-label="Dictate"></button></div></label>
+          <label class="fld"><span>Tools that are clunky, slow or annoying</span>
+            <div class="fw area"><textarea id="toolsFriction" class="short" placeholder="The ones you dread opening — and why, if you like."></textarea>
+              <button type="button" class="mic" data-for="toolsFriction" aria-label="Dictate"></button></div></label>
+          <label class="fld" style="margin-bottom:0"><span>How much does hopping between apps, tabs &amp; logins slow you down?</span>
+            <div class="scale" data-key="switchPain">
+              <span class="sc" data-v="1">1</span><span class="sc" data-v="2">2</span><span class="sc" data-v="3">3</span><span class="sc" data-v="4">4</span><span class="sc" data-v="5">5</span>
+            </div>
+            <div class="scale-ends"><span>Barely</span><span>Constantly</span></div></label>
+        </section>
+
+        <!-- 8 -->
         <section class="step" data-step="mcp">
+          <p class="chapter">Part 2 · Your tools &amp; AI</p>
           <h2>One techie question</h2>
           <p class="help">An “MCP” lets a tool plug straight into another system. If some of you are comfortable with it, we could let you connect directly to our setup instead of filling in forms. Be honest — there's no wrong answer.</p>
           <div class="chips" id="mcpChips" data-single>
@@ -233,14 +296,37 @@
           </div>
         </section>
 
+        <!-- 9 -->
+        <section class="step" data-step="help">
+          <p class="chapter">Part 3 · What would help</p>
+          <h2>If we could turn one dial up…</h2>
+          <p class="help">What would help you do your best work? Tap a few that matter most.</p>
+          <div class="chips" data-multi-simple="needMore">
+            <span class="chip" data-v="Clearer direction">Clearer direction</span>
+            <span class="chip" data-v="Clearer priorities">Clearer priorities</span>
+            <span class="chip" data-v="More detail in briefs">More detail in briefs</span>
+            <span class="chip" data-v="Faster decisions">Faster decisions</span>
+            <span class="chip" data-v="Better tools or systems">Better tools or systems</span>
+            <span class="chip" data-v="Training & upskilling">Training &amp; upskilling</span>
+            <span class="chip" data-v="More focus time">More focus time</span>
+            <span class="chip" data-v="Fewer interruptions">Fewer interruptions</span>
+            <span class="chip" data-v="Smoother handovers">Smoother handovers</span>
+            <span class="chip" data-v="More feedback">More feedback</span>
+          </div>
+          <label class="fld after-chips" style="margin-bottom:0"><span>Anything else on your mind? (optional)</span>
+            <div class="fw area"><textarea id="anythingElse" class="short" placeholder="The floor is yours."></textarea>
+              <button type="button" class="mic" data-for="anythingElse" aria-label="Dictate"></button></div></label>
+        </section>
+
         <!-- result -->
         <section class="step" data-step="done">
+          <p class="chapter">Done</p>
           <h2 class="done-glow">That's it — thank you</h2>
-          <p class="help">Tap copy, then paste this into the Saunabox channel so it reaches Richard.</p>
+          <p class="help" id="doneState">Sending your answers…</p>
           <div class="summary" id="summary"></div>
           <div style="margin-top:16px;display:flex;align-items:center">
-            <button class="btn btn-primary" id="copy" type="button" style="flex:0 0 auto">Copy my answers</button>
-            <span class="toast" id="toast">Copied — now paste it into Slack</span>
+            <button class="btn btn-ghost" id="copy" type="button" style="flex:0 0 auto">Copy a backup</button>
+            <span class="toast" id="toast">Copied</span>
           </div>
         </section>
 
@@ -250,109 +336,152 @@
         </div>
       </form>
 
-      <p class="foot">Nothing is stored on this page — your answers only travel when you paste them. Sauna photo via Wikimedia Commons (CC). Built for Saunabox by Hawthorn Bloom.</p>
+      <p class="foot">Sauna photo via Wikimedia Commons (CC). Built for Saunabox by Hawthorn Bloom.</p>
     </div>
   </main>
 
 <script>
 (function(){
+  // Apps Script web-app URL (ends with /exec). Empty = copy/paste fallback only.
+  const SHEET_ENDPOINT = '';
+
   const DEVICES = ['Mac','Windows','iPhone','Android','iPad / tablet'];
-  const state = { name:'', role:'', resp:'', rhythm:'', main:'', small:'', tools:{}, toolOrder:[], none:false, mcp:'' };
-  const steps = [...document.querySelectorAll('.step')];
-  const total = steps.length - 1; // last is result
-  let i = 0;
+  const state = { name:'', role:'', responsibilities:'', week:'', timeSinks:[], timeOther:'',
+    friction:'', tools:{}, toolOrder:[], none:false, toolsLoved:'', toolsFriction:'', switchPain:'',
+    mcp:'', needMore:[], anythingElse:'' };
+  const steps=[...document.querySelectorAll('.step')];
+  const total=steps.length-1;
+  let i=0, submitted=false;
 
-  const bar = document.getElementById('bar'), count = document.getElementById('count');
-  const back = document.getElementById('back'), next = document.getElementById('next'), nav = document.getElementById('nav');
+  const bar=document.getElementById('bar'), count=document.getElementById('count');
+  const back=document.getElementById('back'), next=document.getElementById('next'), nav=document.getElementById('nav');
 
-  const bind = (id, key)=>{ const el=document.getElementById(id); el && el.addEventListener('input', e=>state[key]=e.target.value.trim()); };
-  ['name','role','resp','rhythm','main','small'].forEach(k=>bind(k,k));
+  const bind=(id,key)=>{ const el=document.getElementById(id); el && el.addEventListener('input', e=>state[key]=e.target.value.trim()); };
+  ['name','role','responsibilities','week','timeOther','friction','toolsLoved','toolsFriction','anythingElse'].forEach(k=>bind(k,k));
+  function popChip(c){ c.classList.remove('pop'); void c.offsetWidth; c.classList.add('pop'); }
 
-  function popChip(chip){ chip.classList.remove('pop'); void chip.offsetWidth; chip.classList.add('pop'); }
+  /* dictation (Web Speech API, feature-detected) */
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  let activeRec=null, activeBtn=null;
+  function stopRec(){ if(activeRec){ try{activeRec.stop();}catch(e){} } if(activeBtn) activeBtn.classList.remove('on'); activeRec=null; activeBtn=null; }
+  if(SR){
+    document.body.classList.add('has-mic');
+    document.querySelectorAll('.mic').forEach(btn=>{
+      btn.innerHTML='<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0"/><line x1="12" y1="18" x2="12" y2="21"/></svg>';
+      btn.addEventListener('click', ()=>{
+        const field=document.getElementById(btn.dataset.for);
+        if(activeBtn===btn){ stopRec(); return; }
+        stopRec();
+        const rec=new SR(); rec.lang='en-GB'; rec.continuous=true; rec.interimResults=false;
+        rec.onresult=(ev)=>{ let t=''; for(let k=ev.resultIndex;k<ev.results.length;k++){ if(ev.results[k].isFinal) t+=ev.results[k][0].transcript; }
+          if(t){ const sep=(field.value && !/\s$/.test(field.value))?' ':''; field.value+=sep+t.trim()+' '; field.dispatchEvent(new Event('input')); } };
+        rec.onerror=()=>stopRec(); rec.onend=()=>{ if(activeBtn===btn) stopRec(); };
+        activeRec=rec; activeBtn=btn; btn.classList.add('on'); field.focus();
+        try{ rec.start(); }catch(e){ stopRec(); }
+      });
+    });
+  }
 
-  const toolChips = document.getElementById('toolChips');
-  const toolDetail = document.getElementById('toolDetail');
-  toolChips.addEventListener('click', e=>{
-    const chip = e.target.closest('.chip'); if(!chip) return; popChip(chip);
-    const v = chip.dataset.v;
-    if(chip.dataset.solo){
-      state.none = !state.none;
-      toolChips.querySelectorAll('.chip').forEach(c=>{ if(!c.dataset.solo) c.classList.remove('on'); });
-      state.tools = {}; state.toolOrder = []; toolDetail.innerHTML = '';
-      chip.classList.toggle('on', state.none); return;
-    }
-    if(state.none){ state.none=false; toolChips.querySelector('[data-solo]').classList.remove('on'); }
-    if(state.tools[v]){ delete state.tools[v]; state.toolOrder = state.toolOrder.filter(t=>t!==v); chip.classList.remove('on'); }
-    else { state.tools[v] = {plan:'', devices:[]}; state.toolOrder.push(v); chip.classList.add('on'); }
-    renderToolDetail();
+  /* simple multi-select chip groups */
+  document.querySelectorAll('[data-multi-simple]').forEach(group=>{
+    const key=group.dataset.multiSimple;
+    group.addEventListener('click', e=>{ const c=e.target.closest('.chip'); if(!c) return; popChip(c);
+      const v=c.dataset.v, arr=state[key];
+      if(arr.includes(v)){ state[key]=arr.filter(x=>x!==v); c.classList.remove('on'); } else { arr.push(v); c.classList.add('on'); } });
   });
 
+  /* scale */
+  document.querySelectorAll('.scale').forEach(sc=>{ const key=sc.dataset.key;
+    sc.addEventListener('click', e=>{ const b=e.target.closest('.sc'); if(!b) return; popChip(b);
+      sc.querySelectorAll('.sc').forEach(x=>x.classList.remove('on')); b.classList.add('on'); state[key]=b.dataset.v; }); });
+
+  /* AI tools matrix */
+  const toolChips=document.getElementById('toolChips'), toolDetail=document.getElementById('toolDetail');
+  toolChips.addEventListener('click', e=>{ const chip=e.target.closest('.chip'); if(!chip) return; popChip(chip);
+    const v=chip.dataset.v;
+    if(chip.dataset.solo){ state.none=!state.none;
+      toolChips.querySelectorAll('.chip').forEach(c=>{ if(!c.dataset.solo) c.classList.remove('on'); });
+      state.tools={}; state.toolOrder=[]; toolDetail.innerHTML=''; chip.classList.toggle('on', state.none); return; }
+    if(state.none){ state.none=false; toolChips.querySelector('[data-solo]').classList.remove('on'); }
+    if(state.tools[v]){ delete state.tools[v]; state.toolOrder=state.toolOrder.filter(t=>t!==v); chip.classList.remove('on'); }
+    else { state.tools[v]={plan:'',devices:[]}; state.toolOrder.push(v); chip.classList.add('on'); }
+    renderToolDetail();
+  });
   function renderToolDetail(){
-    toolDetail.innerHTML = '';
+    toolDetail.innerHTML='';
     state.toolOrder.forEach(name=>{
-      const t = state.tools[name];
-      const row = document.createElement('div'); row.className='tool-row';
-      row.innerHTML =
-        '<p class="tname">'+esc(name)+'</p>'+
+      const t=state.tools[name], row=document.createElement('div'); row.className='tool-row';
+      row.innerHTML='<p class="tname">'+esc(name)+'</p>'+
         '<div class="grp"><p class="sublbl">Free or paid?</p><div class="seg">'+
-          ['Free','Paid','Not sure'].map(p=>'<span class="chip plan" data-p="'+p+'">'+p+'</span>').join('')+
-        '</div></div>'+
+          ['Free','Paid','Not sure'].map(p=>'<span class="chip plan" data-p="'+p+'">'+p+'</span>').join('')+'</div></div>'+
         '<div class="grp"><p class="sublbl">Which device(s)?</p><div class="seg dev">'+
-          DEVICES.map(d=>'<span class="chip dv" data-d="'+esc(d)+'">'+esc(d)+'</span>').join('')+
-        '</div></div>';
-      row.querySelectorAll('.plan').forEach(c=>c.addEventListener('click',()=>{
-        popChip(c); row.querySelectorAll('.plan').forEach(x=>x.classList.remove('on')); c.classList.add('on'); t.plan=c.dataset.p;
-      }));
-      row.querySelectorAll('.dv').forEach(c=>c.addEventListener('click',()=>{
-        popChip(c); const d=c.dataset.d;
-        if(t.devices.includes(d)){t.devices=t.devices.filter(x=>x!==d); c.classList.remove('on');}
-        else{t.devices.push(d); c.classList.add('on');}
-      }));
+          DEVICES.map(d=>'<span class="chip dv" data-d="'+esc(d)+'">'+esc(d)+'</span>').join('')+'</div></div>';
+      row.querySelectorAll('.plan').forEach(c=>c.addEventListener('click',()=>{ popChip(c); row.querySelectorAll('.plan').forEach(x=>x.classList.remove('on')); c.classList.add('on'); t.plan=c.dataset.p; }));
+      row.querySelectorAll('.dv').forEach(c=>c.addEventListener('click',()=>{ popChip(c); const d=c.dataset.d;
+        if(t.devices.includes(d)){t.devices=t.devices.filter(x=>x!==d); c.classList.remove('on');} else {t.devices.push(d); c.classList.add('on');} }));
       if(t.plan){ const pe=row.querySelector('.plan[data-p="'+t.plan+'"]'); pe&&pe.classList.add('on'); }
       t.devices.forEach(d=>{ const el=row.querySelector('.dv[data-d="'+d+'"]'); el&&el.classList.add('on'); });
       toolDetail.appendChild(row);
     });
   }
 
-  const mcpChips = document.getElementById('mcpChips');
-  mcpChips.addEventListener('click', e=>{
-    const chip=e.target.closest('.chip'); if(!chip) return; popChip(chip);
-    mcpChips.querySelectorAll('.chip').forEach(c=>c.classList.remove('on')); chip.classList.add('on'); state.mcp=chip.dataset.v;
-  });
+  const mcpChips=document.getElementById('mcpChips');
+  mcpChips.addEventListener('click', e=>{ const chip=e.target.closest('.chip'); if(!chip) return; popChip(chip);
+    mcpChips.querySelectorAll('.chip').forEach(c=>c.classList.remove('on')); chip.classList.add('on'); state.mcp=chip.dataset.v; });
 
+  /* navigation */
   function render(){
     steps.forEach((s,idx)=>s.classList.toggle('active', idx===i));
-    const onResult = i===total;
-    bar.style.width = Math.round(((i+1)/(total+1))*100)+'%';
-    count.textContent = onResult ? 'Done' : ((i+1)+' / '+total);
-    nav.style.display = onResult ? 'none' : 'flex';
-    back.disabled = i===0;
-    next.textContent = (i===total-1) ? 'See my answers' : 'Continue';
-    if(onResult) buildSummary();
+    const onResult=i===total;
+    bar.style.width=Math.round(((i+1)/(total+1))*100)+'%';
+    count.textContent=onResult?'Done':((i+1)+' / '+total);
+    nav.style.display=onResult?'none':'flex';
+    back.disabled=i===0;
+    next.textContent=(i===total-1)?'Finish':'Continue';
+    if(onResult){ stopRec(); buildSummary(); submit(); }
     window.scrollTo({top:0, behavior:'smooth'});
   }
   next.addEventListener('click', ()=>{ if(i<total){ i++; render(); }});
   back.addEventListener('click', ()=>{ if(i>0){ i--; render(); }});
 
+  function joinList(arr, other){ const a=arr.slice(); if(other) a.push(other); return a.length?a.join('; '):''; }
+  function aiToolsString(){
+    if(state.none) return 'none yet';
+    if(!state.toolOrder.length) return '(not answered)';
+    return state.toolOrder.map(n=>{ const t=state.tools[n];
+      return n+' ('+(t.plan||'plan not given')+' · '+(t.devices.length?t.devices.join(', '):'device not given')+')'; }).join('; ');
+  }
+  function payload(){
+    return {
+      name:state.name, role:state.role, responsibilities:state.responsibilities, week:state.week,
+      timeSinks:joinList(state.timeSinks, state.timeOther), friction:state.friction,
+      aiTools:aiToolsString(), toolsLoved:state.toolsLoved, toolsFriction:state.toolsFriction,
+      switchPain:state.switchPain, mcp:state.mcp, needMore:joinList(state.needMore, ''), anythingElse:state.anythingElse
+    };
+  }
   function buildSummary(){
-    const L=[];
-    L.push('SAUNABOX CHECK-IN — '+(state.name||'(no name given)'));
-    if(state.role) L.push('Role: '+state.role);
-    if(state.resp) L.push('Responsible for: '+state.resp);
-    if(state.rhythm) L.push('Regular rhythm: '+state.rhythm);
-    if(state.main) L.push('Main tasks: '+state.main);
-    if(state.small) L.push('Smaller tasks: '+state.small);
-    L.push('');
-    if(state.none){ L.push('AI tools: none yet'); }
-    else if(state.toolOrder.length){
-      L.push('AI tools:');
-      state.toolOrder.forEach(n=>{ const t=state.tools[n];
-        const parts=[t.plan||'plan not given', (t.devices.length?t.devices.join(', '):'device not given')];
-        L.push('  - '+n+' ('+parts.join(' · ')+')');
-      });
-    } else { L.push('AI tools: (not answered)'); }
-    L.push('MCP setup: '+(state.mcp||'(not answered)'));
-    document.getElementById('summary').textContent = L.join('\n');
+    const p=payload(), L=[];
+    L.push('SAUNABOX CHECK-IN — '+(p.name||'(no name given)'));
+    if(p.role) L.push('Role: '+p.role);
+    if(p.responsibilities) L.push('Responsible for: '+p.responsibilities);
+    if(p.week) L.push('Typical week: '+p.week);
+    if(p.timeSinks) L.push('Biggest time-sinks: '+p.timeSinks);
+    if(p.friction) L.push('Biggest friction: '+p.friction);
+    L.push('AI tools: '+p.aiTools);
+    if(p.toolsLoved) L.push('Tools loved: '+p.toolsLoved);
+    if(p.toolsFriction) L.push('Tools that grind: '+p.toolsFriction);
+    if(p.switchPain) L.push('App-switching pain (1-5): '+p.switchPain);
+    L.push('MCP setup: '+(p.mcp||'(not answered)'));
+    if(p.needMore) L.push('What would help: '+p.needMore);
+    if(p.anythingElse) L.push('Anything else: '+p.anythingElse);
+    document.getElementById('summary').textContent=L.join('\n');
+  }
+  function submit(){
+    const done=document.getElementById('doneState');
+    if(!SHEET_ENDPOINT){ done.textContent='Copy your answers below and paste them into the Saunabox channel.'; return; }
+    if(submitted) return; submitted=true;
+    try{ fetch(SHEET_ENDPOINT,{method:'POST',mode:'no-cors',body:JSON.stringify(payload())}); }catch(e){}
+    done.textContent='All sent — thank you. Nothing else to do.';
   }
 
   document.getElementById('copy').addEventListener('click', async ()=>{
@@ -363,7 +492,6 @@
   });
 
   function esc(s){ return String(s).replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m])); }
-
   render();
 })();
 </script>
