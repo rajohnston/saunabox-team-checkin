@@ -1,0 +1,350 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Saunabox — quick team check-in</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --primary:#1C1412;        /* dark chocolate — headings/text */
+    --primary-light:#2E2420;
+    --surface:#FAF9F5;        /* warm off-white — page */
+    --sand:#F0E6D8;           /* soft sand — cards */
+    --accent:#8C4A2F;         /* burnt umber — CTAs */
+    --accent-hover:#7A3A22;
+    --secondary:#6B3520;      /* deep wood */
+    --on-accent:#FAF9F5;
+    --muted:#7A6E65;
+    --border:#E3D8CC;
+    --border-strong:#C8B8A8;
+    --r-sm:8px; --r-md:12px; --r-lg:16px; --r-xl:24px;
+    --shadow-md:0 4px 16px rgba(26,26,26,.10);
+    --shadow-lg:0 16px 48px rgba(28,20,18,.16);
+    --t:250ms cubic-bezier(.2,.7,.2,1);
+  }
+  *{box-sizing:border-box}
+  html,body{min-height:100%}
+  body{
+    margin:0; color:var(--primary);
+    font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    background:
+      radial-gradient(1100px 520px at 50% -8%, #fff6ea 0%, transparent 62%),
+      radial-gradient(800px 460px at 110% 8%, #f6ead9 0%, transparent 55%),
+      var(--surface);
+    -webkit-font-smoothing:antialiased;
+    display:flex; align-items:flex-start; justify-content:center;
+    padding:clamp(16px,4vw,48px) clamp(14px,4vw,24px) 64px;
+  }
+  /* subtle warm "steam" glow at the top */
+  .glow{position:fixed; left:50%; top:-160px; width:520px; height:320px; transform:translateX(-50%);
+    background:radial-gradient(closest-side, rgba(140,74,47,.16), transparent 70%);
+    filter:blur(20px); pointer-events:none; z-index:0; animation:sway 9s ease-in-out infinite}
+  @keyframes sway{0%,100%{opacity:.7; transform:translateX(-52%) translateY(0)}50%{opacity:1; transform:translateX(-48%) translateY(10px)}}
+
+  .card{position:relative; z-index:1; width:min(640px,100%);
+    background:#fff; border:1px solid var(--border); border-radius:var(--r-xl);
+    box-shadow:var(--shadow-lg); padding:clamp(22px,5vw,40px);
+    animation:rise .5s var(--t) both}
+  @keyframes rise{from{opacity:0; transform:translateY(16px)}to{opacity:1; transform:none}}
+
+  .eyebrow{display:inline-flex; align-items:center; gap:9px; margin:0 0 12px;
+    font-size:12px; letter-spacing:.16em; text-transform:uppercase; font-weight:700; color:var(--accent)}
+  .eyebrow::before{content:""; width:22px; height:2px; background:var(--accent); border-radius:2px}
+  h1{margin:0 0 8px; font-weight:800; letter-spacing:-.02em; line-height:1.1;
+    font-size:clamp(26px,6.4vw,40px)}
+  .lede{margin:0 0 24px; color:var(--muted); font-size:clamp(15px,3.6vw,17px); line-height:1.5; max-width:46ch}
+
+  /* progress */
+  .meter{display:flex; align-items:center; gap:12px; margin:0 0 26px}
+  .track{flex:1; height:8px; background:var(--sand); border-radius:99px; overflow:hidden}
+  .track > i{display:block; height:100%; width:16%; border-radius:99px;
+    background:linear-gradient(90deg,var(--accent),var(--secondary)); transition:width .45s var(--t)}
+  .count{font-size:13px; font-weight:600; color:var(--muted); white-space:nowrap}
+
+  /* steps */
+  .step{display:none}
+  .step.active{display:block; animation:slide .42s var(--t) both}
+  @keyframes slide{from{opacity:0; transform:translateY(12px)}to{opacity:1; transform:none}}
+  .step h2{margin:0 0 6px; font-size:clamp(20px,5vw,27px); font-weight:700; letter-spacing:-.01em; line-height:1.2}
+  .step .help{margin:0 0 20px; color:var(--muted); font-size:15px; line-height:1.5}
+
+  label.fld{display:block; margin:0 0 18px}
+  label.fld > span{display:block; font-weight:600; font-size:15px; margin:0 0 8px}
+  input[type=text], textarea{
+    width:100%; font:inherit; color:var(--primary); background:var(--surface);
+    border:1.5px solid var(--border); border-radius:var(--r-md); padding:14px 16px;
+    transition:border-color var(--t), box-shadow var(--t)}
+  textarea{min-height:120px; resize:vertical; line-height:1.5}
+  input:focus, textarea:focus{outline:none; border-color:var(--accent);
+    box-shadow:0 0 0 4px rgba(140,74,47,.12)}
+  ::placeholder{color:#b3a899}
+
+  /* chips */
+  .chips{display:flex; flex-wrap:wrap; gap:10px}
+  .chip{cursor:pointer; user-select:none; min-height:48px; display:inline-flex; align-items:center;
+    padding:11px 18px; border-radius:999px; font-size:15px; font-weight:600;
+    color:var(--primary); background:var(--surface); border:1.5px solid var(--border);
+    transition:transform .12s ease, background var(--t), border-color var(--t), color var(--t)}
+  .chip:hover{border-color:var(--border-strong)}
+  .chip:active{transform:scale(.96)}
+  .chip.on{background:var(--accent); border-color:var(--accent); color:var(--on-accent)}
+  .chip.lg{padding:14px 20px; font-size:16px}
+
+  /* per-tool detail */
+  .tool-detail{margin-top:18px; display:flex; flex-direction:column; gap:12px}
+  .tool-row{background:var(--sand); border:1px solid var(--border); border-radius:var(--r-lg);
+    padding:16px; animation:slide .3s var(--t) both}
+  .tool-row .tname{font-weight:700; font-size:16px; margin:0 0 12px}
+  .tool-row .sublbl{font-size:12.5px; font-weight:600; text-transform:uppercase; letter-spacing:.06em;
+    color:var(--muted); margin:0 0 8px}
+  .tool-row .grp{margin-bottom:14px}
+  .tool-row .grp:last-child{margin-bottom:0}
+  .seg{display:flex; gap:8px; flex-wrap:wrap}
+  .seg .chip{min-height:42px; padding:9px 16px; font-size:14px; background:#fff}
+  .seg .chip.on{background:var(--accent); color:var(--on-accent)}
+  .dev .chip{min-height:42px; padding:9px 14px; font-size:14px; background:#fff}
+
+  /* nav */
+  .nav{display:flex; gap:12px; align-items:center; margin-top:28px}
+  .btn{cursor:pointer; border:0; font:inherit; font-weight:700; min-height:52px; padding:0 26px;
+    border-radius:var(--r-md); transition:transform .12s ease, filter var(--t), background var(--t)}
+  .btn:active{transform:scale(.98)}
+  .btn-primary{background:var(--accent); color:var(--on-accent); flex:1}
+  .btn-primary:hover{background:var(--accent-hover)}
+  .btn-ghost{background:transparent; color:var(--secondary); box-shadow:inset 0 0 0 1.5px var(--border-strong)}
+  .btn[disabled]{opacity:.45; cursor:not-allowed}
+
+  /* result */
+  .summary{background:var(--sand); border:1px solid var(--border); border-radius:var(--r-lg);
+    padding:18px 20px; white-space:pre-wrap; line-height:1.6; font-size:15px; color:var(--primary)}
+  .toast{display:inline-block; margin-left:12px; color:var(--secondary); font-weight:700; font-size:14px;
+    opacity:0; transform:translateY(4px); transition:all var(--t)}
+  .toast.show{opacity:1; transform:none}
+  .foot{margin-top:22px; padding-top:18px; border-top:1px solid var(--border);
+    color:var(--muted); font-size:13px; line-height:1.5}
+
+  @media (prefers-reduced-motion: reduce){
+    *{animation:none !important; transition:none !important}
+  }
+</style>
+</head>
+<body>
+  <div class="glow"></div>
+  <main class="card">
+    <p class="eyebrow">Saunabox team</p>
+    <h1 id="title">A quick check-in</h1>
+    <p class="lede" id="lede">Two minutes to map what each of us does, and the AI tools we already use. No wrong answers — this just helps us help each other and avoid paying twice for the same thing.</p>
+
+    <div class="meter"><div class="track"><i id="bar"></i></div><span class="count" id="count">1 / 6</span></div>
+
+    <form id="form" onsubmit="return false">
+
+      <!-- 1: You -->
+      <section class="step active" data-step="you">
+        <h2>First, who are you?</h2>
+        <p class="help">So your answers can be matched to you.</p>
+        <label class="fld"><span>Your name</span>
+          <input type="text" id="name" placeholder="e.g. Sam Carter" autocomplete="name" /></label>
+        <label class="fld"><span>Your role / job title</span>
+          <input type="text" id="role" placeholder="e.g. Operations, Sales, Workshop, Founder" /></label>
+      </section>
+
+      <!-- 2: Responsibilities -->
+      <section class="step" data-step="resp">
+        <h2>What are you responsible for?</h2>
+        <p class="help">The areas that are yours to own — in your own words. A few lines is plenty.</p>
+        <label class="fld"><span>Your responsibilities</span>
+          <textarea id="resp" placeholder="e.g. I handle customer enquiries and bookings, manage the install schedule, and look after supplier orders."></textarea></label>
+      </section>
+
+      <!-- 3: Rhythm -->
+      <section class="step" data-step="rhythm">
+        <h2>What do you do on a regular rhythm?</h2>
+        <p class="help">The repeating things — daily, weekly or monthly. The stuff that comes round again and again.</p>
+        <label class="fld"><span>Your recurring tasks</span>
+          <textarea id="rhythm" placeholder="e.g. Daily: check & reply to enquiries. Weekly: update the install calendar, order stock. Monthly: reconcile invoices."></textarea></label>
+      </section>
+
+      <!-- 4: Tasks -->
+      <section class="step" data-step="tasks">
+        <h2>And your tasks right now?</h2>
+        <p class="help">Roughly — the big things on your plate, plus the smaller bits.</p>
+        <label class="fld"><span>Main tasks</span>
+          <textarea id="main" placeholder="The bigger pieces you're working on at the moment."></textarea></label>
+        <label class="fld"><span>Smaller / odd-job tasks</span>
+          <textarea id="small" placeholder="The little recurring or one-off bits that still eat time."></textarea></label>
+      </section>
+
+      <!-- 5: AI tools -->
+      <section class="step" data-step="ai">
+        <h2>Which AI tools do you use?</h2>
+        <p class="help">Tap any you use. For each one, we'll ask if it's free or paid, and the device you use it on.</p>
+        <div class="chips" id="toolChips" data-multi>
+          <span class="chip" data-v="ChatGPT">ChatGPT</span>
+          <span class="chip" data-v="Claude">Claude</span>
+          <span class="chip" data-v="Gemini">Gemini</span>
+          <span class="chip" data-v="Copilot (Microsoft)">Copilot (Microsoft)</span>
+          <span class="chip" data-v="Perplexity">Perplexity</span>
+          <span class="chip" data-v="Midjourney / image tools">Midjourney / image tools</span>
+          <span class="chip" data-v="Notion AI">Notion AI</span>
+          <span class="chip" data-v="Something else">Something else</span>
+          <span class="chip" data-v="None yet" data-solo>None yet</span>
+        </div>
+        <div class="tool-detail" id="toolDetail"></div>
+      </section>
+
+      <!-- 6: MCP -->
+      <section class="step" data-step="mcp">
+        <h2>One techie question</h2>
+        <p class="help">An “MCP” lets a tool plug straight into another system. If some of you are comfortable with it, we could let you connect directly to our setup instead of filling in forms. Be honest — there's no wrong answer.</p>
+        <div class="chips" id="mcpChips" data-single>
+          <span class="chip lg" data-v="Yes — I've set one up">Yes — I've set one up</span>
+          <span class="chip lg" data-v="I could figure it out">I could figure it out</span>
+          <span class="chip lg" data-v="I've heard of MCP">I've heard the term</span>
+          <span class="chip lg" data-v="New to me">New to me</span>
+        </div>
+      </section>
+
+      <!-- result -->
+      <section class="step" data-step="done">
+        <h2>That's it — thank you</h2>
+        <p class="help">Tap copy, then paste this into the Saunabox channel so it reaches Richard.</p>
+        <div class="summary" id="summary"></div>
+        <div style="margin-top:16px;display:flex;align-items:center">
+          <button class="btn btn-primary" id="copy" type="button" style="flex:0 0 auto">Copy my answers</button>
+          <span class="toast" id="toast">Copied — now paste it into Slack</span>
+        </div>
+      </section>
+
+      <div class="nav" id="nav">
+        <button class="btn btn-ghost" id="back" type="button" disabled>Back</button>
+        <button class="btn btn-primary" id="next" type="button">Continue</button>
+      </div>
+    </form>
+
+    <p class="foot">Nothing is stored on this page — your answers only travel when you paste them. Built for Saunabox by Hawthorn Bloom.</p>
+  </main>
+
+<script>
+(function(){
+  const DEVICES = ['Mac','Windows','iPhone','Android','iPad / tablet'];
+  const state = { name:'', role:'', resp:'', rhythm:'', main:'', small:'', tools:{}, toolOrder:[], none:false, mcp:'' };
+  const steps = [...document.querySelectorAll('.step')];
+  const total = steps.length - 1; // last is result
+  let i = 0;
+
+  const bar = document.getElementById('bar'), count = document.getElementById('count');
+  const back = document.getElementById('back'), next = document.getElementById('next'), nav = document.getElementById('nav');
+
+  const bind = (id, key)=>{ const el=document.getElementById(id); el && el.addEventListener('input', e=>state[key]=e.target.value.trim()); };
+  ['name','role','resp','rhythm','main','small'].forEach(k=>bind(k,k));
+
+  // tool selection -> per-tool detail
+  const toolChips = document.getElementById('toolChips');
+  const toolDetail = document.getElementById('toolDetail');
+  toolChips.addEventListener('click', e=>{
+    const chip = e.target.closest('.chip'); if(!chip) return;
+    const v = chip.dataset.v;
+    if(chip.dataset.solo){
+      state.none = !state.none;
+      toolChips.querySelectorAll('.chip').forEach(c=>{ if(!c.dataset.solo){c.classList.remove('on');} });
+      state.tools = {}; state.toolOrder = [];
+      toolDetail.innerHTML = '';
+      chip.classList.toggle('on', state.none);
+      return;
+    }
+    // selecting a real tool clears "none"
+    if(state.none){ state.none=false; toolChips.querySelector('[data-solo]').classList.remove('on'); }
+    if(state.tools[v]){ delete state.tools[v]; state.toolOrder = state.toolOrder.filter(t=>t!==v); chip.classList.remove('on'); }
+    else { state.tools[v] = {plan:'', devices:[]}; state.toolOrder.push(v); chip.classList.add('on'); }
+    renderToolDetail();
+  });
+
+  function renderToolDetail(){
+    toolDetail.innerHTML = '';
+    state.toolOrder.forEach(name=>{
+      const t = state.tools[name];
+      const row = document.createElement('div'); row.className='tool-row';
+      row.innerHTML =
+        '<p class="tname">'+esc(name)+'</p>'+
+        '<div class="grp"><p class="sublbl">Free or paid?</p><div class="seg">'+
+          ['Free','Paid','Not sure'].map(p=>'<span class="chip plan" data-p="'+p+'">'+p+'</span>').join('')+
+        '</div></div>'+
+        '<div class="grp"><p class="sublbl">Which device(s)?</p><div class="seg dev">'+
+          DEVICES.map(d=>'<span class="chip dv" data-d="'+esc(d)+'">'+esc(d)+'</span>').join('')+
+        '</div></div>';
+      row.querySelectorAll('.plan').forEach(c=>c.addEventListener('click',()=>{
+        row.querySelectorAll('.plan').forEach(x=>x.classList.remove('on')); c.classList.add('on'); t.plan=c.dataset.p;
+      }));
+      row.querySelectorAll('.dv').forEach(c=>c.addEventListener('click',()=>{
+        const d=c.dataset.d; if(t.devices.includes(d)){t.devices=t.devices.filter(x=>x!==d); c.classList.remove('on');}
+        else{t.devices.push(d); c.classList.add('on');}
+      }));
+      // restore prior selections
+      if(t.plan) row.querySelector('.plan[data-p="'+t.plan+'"]').classList.add('on');
+      t.devices.forEach(d=>{ const el=row.querySelector('.dv[data-d="'+d+'"]'); el&&el.classList.add('on'); });
+      toolDetail.appendChild(row);
+    });
+  }
+
+  // mcp single-select
+  const mcpChips = document.getElementById('mcpChips');
+  mcpChips.addEventListener('click', e=>{
+    const chip=e.target.closest('.chip'); if(!chip) return;
+    mcpChips.querySelectorAll('.chip').forEach(c=>c.classList.remove('on')); chip.classList.add('on'); state.mcp=chip.dataset.v;
+  });
+
+  function render(){
+    steps.forEach((s,idx)=>s.classList.toggle('active', idx===i));
+    const onResult = i===total;
+    bar.style.width = Math.round(((i+1)/(total+1))*100)+'%';
+    count.textContent = onResult ? 'Done' : ((i+1)+' / '+total);
+    nav.style.display = onResult ? 'none' : 'flex';
+    back.disabled = i===0;
+    next.textContent = (i===total-1) ? 'See my answers' : 'Continue';
+    if(onResult) buildSummary();
+    window.scrollTo({top:0, behavior:'smooth'});
+  }
+
+  next.addEventListener('click', ()=>{ if(i<total){ i++; render(); }});
+  back.addEventListener('click', ()=>{ if(i>0){ i--; render(); }});
+
+  function buildSummary(){
+    const L=[];
+    L.push('SAUNABOX CHECK-IN — '+(state.name||'(no name given)'));
+    if(state.role) L.push('Role: '+state.role);
+    if(state.resp) L.push('Responsible for: '+state.resp);
+    if(state.rhythm) L.push('Regular rhythm: '+state.rhythm);
+    if(state.main) L.push('Main tasks: '+state.main);
+    if(state.small) L.push('Smaller tasks: '+state.small);
+    L.push('');
+    if(state.none){ L.push('AI tools: none yet'); }
+    else if(state.toolOrder.length){
+      L.push('AI tools:');
+      state.toolOrder.forEach(n=>{ const t=state.tools[n];
+        const parts=[t.plan||'plan not given', (t.devices.length?t.devices.join(', '):'device not given')];
+        L.push('  - '+n+' ('+parts.join(' · ')+')');
+      });
+    } else { L.push('AI tools: (not answered)'); }
+    L.push('MCP setup: '+(state.mcp||'(not answered)'));
+    document.getElementById('summary').textContent = L.join('\n');
+  }
+
+  document.getElementById('copy').addEventListener('click', async ()=>{
+    const txt=document.getElementById('summary').textContent;
+    try{ await navigator.clipboard.writeText(txt); }
+    catch{ const ta=document.createElement('textarea'); ta.value=txt; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); ta.remove(); }
+    const t=document.getElementById('toast'); t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2400);
+  });
+
+  function esc(s){ return String(s).replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m])); }
+  function cssEsc(s){ return s.replace(/[^a-zA-Z0-9]/g, m=>'\\'+m); }
+
+  render();
+})();
+</script>
+</body>
+</html>
